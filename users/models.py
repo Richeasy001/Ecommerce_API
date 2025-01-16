@@ -1,9 +1,19 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 
-class User(AbstractUser):
-    email = models.EmailField(unique=True)
-    is_staff = models.BooleanField(default=False)  # To manage products
-
-    def __str__(self):
-        return self.username
+class CustomUser(AbstractUser):
+    # Add or customize fields here if needed
+    groups = models.ManyToManyField(
+        Group,
+        related_name="customuser_set",  # Avoids conflict with the default User model
+        blank=True,
+        help_text="The groups this user belongs to.",
+        verbose_name="groups",
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        related_name="customuser_set",  # Avoids conflict with the default User model
+        blank=True,
+        help_text="Specific permissions for this user.",
+        verbose_name="user permissions",
+    )
